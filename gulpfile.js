@@ -11,7 +11,8 @@ const packageJson = require('./package.json')
 const execute = require('./utils/execute')
 const log = require('fancy-log')
 const version = process.env.VERSION || packageJson.version
-const fsPromises = require('fs').promises
+const Promise = require('bluebird')
+const fsPromises = Promise.promisifyAll(require('fs'))
 
 const banner = `/*!
 * ${packageJson.name} v${version}
@@ -30,7 +31,7 @@ const skipStandalone = process.argv.includes('--skip-standalone')
 // ---
 
 gulp.task('clean', () => {
-  return fsPromises.readdir('dist')
+  return fsPromises.readdirAsync('dist')
     .then(fileList => {
       if (fileList.length > 0) {
         let unlinkPromises = []
